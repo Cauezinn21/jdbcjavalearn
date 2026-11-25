@@ -13,9 +13,12 @@ import java.util.List;
 
 public class UserRepository {
 
+    private UserRepository(){
+
+    }
     public static void save(User user){
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("Insert Into users(name) values (?)")){
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO  users(name) VALUES (?)")){
              preparedStatement.setString(1, user.getName());
              preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -25,7 +28,7 @@ public class UserRepository {
     public static List<User> findAll(){
         List<User> users = new ArrayList<>();
         try(Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("Select * from users")) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             try (resultSet){
                while (resultSet.next()){
@@ -35,7 +38,7 @@ public class UserRepository {
                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return users;
     }
@@ -55,7 +58,7 @@ public class UserRepository {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return user;
     }

@@ -5,6 +5,8 @@ import com.caue.jdbcjava.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.List;
 public class Server {
     static void main() throws IOException {
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
+
 
         httpServer.createContext("/usersAll", exchange -> {
             try {
@@ -44,7 +47,7 @@ public class Server {
                     outputStream.write(bytes);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException();
             }
             finally {
                 exchange.close();
@@ -110,7 +113,7 @@ public class Server {
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+
 
                 try {
                     String error = "Internal server error";
@@ -128,8 +131,9 @@ public class Server {
 
 
                 catch (IOException f){
-                    f.printStackTrace();
+                    throw new RuntimeException(f);
                 }
+                throw new RuntimeException(e);
             }
             finally {
                 exchange.close();
